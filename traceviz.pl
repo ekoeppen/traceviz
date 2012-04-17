@@ -4,6 +4,7 @@ $interval = 0.01;
 $sum = 0;
 %threads = {};
 %times = {};
+$total = 0;
 
 sub reset_times {
     for (keys %$threads) {
@@ -18,8 +19,9 @@ while (<FILE>) {
     $threads->{$prev} = 1;
 }
 
+printf("%s", "Time");
 for (keys %$threads) {
-    printf("%s, ", $_);
+    printf(", %s", $_);
 }
 printf("\n");
 
@@ -30,17 +32,15 @@ while (<FILE>) {
     $delta =~ s/[()+]//g;
     $prev =~ s/[",]//g;
     if ($delta > 0.0) {
-#        printf("%s %s\n", $delta, $prev);
         $times->{$prev} += $delta;
     }
     $sum += $delta;
+    $total += $delta;
     if ($sum > $interval) {
-#        printf("------------------------------------------------\n");
+        printf("%f", $total);
         for (keys %$threads) {
-#            printf("%s: %f ", $_, $times->{$_});
-            printf("%f, ", $times->{$_});
+            printf(", %f", $times->{$_});
         }
-#        printf("\n== %f ========================================\n", $sum);
         reset_times();
         printf("\n");
         $sum = 0;
